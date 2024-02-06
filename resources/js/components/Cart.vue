@@ -2,7 +2,8 @@
   <div class="container">
     <div class="row">
       <h1 class="my-2">Mon panier d'achat: </h1>
-      <div v-for="article in articles" :key="article.id">
+
+      <div v-for="article in getCartItems" :key="article.id">
         <div class="cart-item border my-2 p-2">
           <div class="row align-items-center">
             <div class="col-sm-2">
@@ -18,23 +19,22 @@
               <h6>Quantité choisie: {{ article.pivot.quantity }}</h6>
             </div>
             <div class="col-sm-1">
-              <button class="btn btn-danger w-100">X</button>
+              <button class="btn btn-danger w-100" @click="removeItem(article)">X</button>
             </div>
           </div>
         </div>
       </div>
+      
     </div>
 
     <div class="cart-footer mt-5">
       <div class="prix-total">
-        <slot></slot>
-        <h6 class="h2">Prix total:  {{ totalPrice }}€</h6>
-      </div>
-      <button class="btn btn-primary btn-lg">
-        Commander Maintenant
-      </button>
-    </div>
 
+        <h6 class="h2">Prix total: {{ total }}€</h6>
+      </div>
+      <slot></slot>
+
+    </div>
   </div>
 </template>
 
@@ -42,15 +42,20 @@
 import store from '../store';
 import { mapGetters, mapActions } from 'vuex';
 export default {
-  props: ['articles','totalPrice'],
+  props: ['articles','total'],
   computed: {
-   // ...mapGetters(['getCart'])
+    ...mapGetters(['getCart', 'getCartItems'])
   },
   methods :{
-    ...mapActions(['getCurrentCart']),
+    ...mapActions(['getCurrentCart', 'removeItem', 'fetchCartItems', 'createCommande']),
+    handleSubmit()
+    {
+     this.createCommande(this.getCart, this.total);
+    }
   },
   mounted() {
     this.getCurrentCart();
+    this.fetchCartItems();
   }
 }
 </script>
@@ -60,10 +65,5 @@ export default {
   width: 150px;
   min-height: 100px;
 }
-.cart-footer {
-  display: flex;
-  flex-direction: row;
-  justify-content: space-between;
-  align-items: space-between;
-}
+
 </style>

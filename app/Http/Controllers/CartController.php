@@ -24,16 +24,8 @@ class CartController extends Controller
     public function show(Cart $cart)
     {
         $totalPrice = $this->calculateTotalPrice($cart);
-        
-        return view('cart.show', compact('cart', 'totalPrice'));
-    }
 
-    /**
-     * Show the form for editing the specified resource.
-     */
-    public function edit(Cart $cart)
-    {
-        //
+        return view('cart.show', compact('cart', 'totalPrice'));
     }
 
     /**
@@ -58,7 +50,7 @@ class CartController extends Controller
 
         //Si l'article existe on met à jour sa quantité
         else {
-           $cart->articles()->syncWithoutDetaching([$article->id => ['quantity' => $data['quantity']]]);
+            $cart->articles()->syncWithoutDetaching([$article->id => ['quantity' => $data['quantity']]]);
         }
         
         return redirect(route('cart.show', $cart));
@@ -81,6 +73,11 @@ class CartController extends Controller
         return auth()->user()->cart;
     }
 
+    public function getCartItems()
+    {
+        $cartArticles = auth()->user()->cart->articles()->withPivot('quantity')->get();
+        return $cartArticles;
+    }
     /**
      * Calculer le prix total dans le panier
      */
@@ -97,4 +94,11 @@ class CartController extends Controller
         return $totalPrice;
     }
 
+    /**
+     * Supprimer l'article choisi du panier d'achat
+     */
+    public function removeCartArticle(Request $request, Cart $cart, Article $article) {
+        $cart->articles()->detach($article);
+        return 'Article deleted Successfully';
+    }
 }

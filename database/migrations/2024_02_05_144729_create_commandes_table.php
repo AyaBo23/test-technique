@@ -14,6 +14,7 @@ return new class extends Migration
         Schema::create('commandes', function (Blueprint $table) {
             $table->id();
             $table->foreignId('user_id');
+            $table->double('price');
             $table->timestamps();
         });
     }

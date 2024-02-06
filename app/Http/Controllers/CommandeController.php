@@ -21,22 +21,38 @@ class CommandeController extends Controller
         return view('commandes.index');
     }
 
-    /**
-     * Show the form for creating a new resource.
-     */
-    public function create()
-    {
-        //
-    }
 
     /**
      * Store a newly created resource in storage.
      */
     public function store(Request $request)
     {
-        //
-    }
+        //Liste des articles Commandés: 
+        $orderedArticles = auth()->user()->cart->articles()->get();
+        $orderedArticlesIds = auth()->user()->cart->articles()->select('id')->get();
 
+        //Prix total de la commande: 
+        $price = $request->validate([
+            'price' => 'required'
+        ]);
+
+        $userId = auth()->user()->id;
+
+        //On crée la commande 
+
+        $commande = Commande::create([
+            'user_id' => $userId,
+            'price' => $price['price'],
+        ]);
+
+        // On crée la relation entre la commande et les articles commandés avec les quantités commandées: 
+
+       // $commande->articles()->attach($orderedArticlesIds, ['quantity' => $orderedArticles->pivot->quantity->get()]);
+
+       //On vide le panier d'achat
+       return redirect(route('commandes.index'));
+             
+    }
     /**
      * Display the specified resource.
      */

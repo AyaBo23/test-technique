@@ -14,7 +14,7 @@ return new class extends Migration
         Schema::create('article_commande', function (Blueprint $table) {
             $table->unsignedInteger('article_id');
             $table->unsignedInteger('commande_id');
-            $table->integer('quantite');
+            $table->integer('quantity');
         });
     }
 
