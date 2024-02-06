@@ -13,11 +13,12 @@ class ArticleController extends Controller
     public function index(Request $request)
     {
         $articles = Article::all();
+        $cart = auth()->user()->cart;
 
         if ($request->ajax()) {
             return response()->json($articles);
         }
-        return view('articles.index');
+        return view('articles.index', compact('articles', 'cart'));
     }
 
     /**

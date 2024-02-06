@@ -1,0 +1,12 @@
+.article {
+  &-image {
+    min-height: 150px;
+    background-color: rgb(248, 245, 245);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #eee;
+    border-radius: 10px;
+    margin-bottom: 10px;
+  }
+}

@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Cart;
 use App\Models\Article;
 use Illuminate\Http\Request;
+use Illuminate\Validation\Rule;
 
 class CartController extends Controller
 {
@@ -22,7 +23,9 @@ class CartController extends Controller
      */
     public function show(Cart $cart)
     {
-        return view('cart.show', compact('cart'));
+        $totalPrice = $this->calculateTotalPrice($cart);
+        
+        return view('cart.show', compact('cart', 'totalPrice'));
     }
 
     /**
@@ -39,23 +42,26 @@ class CartController extends Controller
     public function update(Request $request, Cart $cart)
     {
         $data = $request->validate([
-            'id' => 'required',
-            'label' => 'required',
-            'price' => 'required',
-            'stock_quantity' => 'required|min:1'
+            'article' => 'required',
+            'quantity' => 'required|min:1'
         ]);
-       // return $data;
+
+        $article = Article::find($data['article']);
+
         //On vérifie si l'article existe déjà dans le panier
-        $existsInCart = $cart::find($data['id']);
-        if (!$existsInCart) {
-            $quantity = 1;
-            $cart->articles()->attach($data['id']);
+        $existsInCart = $cart->articles()->where('article_id', $article->id)->exists();
+
+        // Si l'article n'existe pas dans le panier on l'ajoute: 
+        if (!($existsInCart)) {
+            $cart->articles()->attach($article, ['quantity' => $data['quantity']]);
         }
+
+        //Si l'article existe on met à jour sa quantité
         else {
-            return $existsInCart;
+           $cart->articles()->syncWithoutDetaching([$article->id => ['quantity' => $data['quantity']]]);
         }
-    
-        return 'Product Added successfully!';
+        
+        return redirect(route('cart.show', $cart));
 
     }
 
@@ -73,6 +79,22 @@ class CartController extends Controller
     public function getCurrentCart() 
     {
         return auth()->user()->cart;
+    }
+
+    /**
+     * Calculer le prix total dans le panier
+     */
+    public function calculateTotalPrice(Cart $cart) {
+
+        $cartArticles = $cart->articles()->get();
+
+        $totalPrice = 0;
+
+        foreach($cartArticles as $cartArticle) {
+            $totalPrice += $cartArticle->price * $cartArticle->pivot->quantity;
+        }
+
+        return $totalPrice;
     }
 
 }
