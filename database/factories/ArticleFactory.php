@@ -17,7 +17,9 @@ class ArticleFactory extends Factory
     public function definition(): array
     {
         return [
-
+            'label' => fake()->word(),
+            'price' => fake()->randomFloat(2, 10, 700),
+            'stock_quantity' => random_int(1, 60),
         ];
     }
 }

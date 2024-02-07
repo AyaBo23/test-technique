@@ -13,8 +13,6 @@ class CommandeController extends Controller
     public function index(Request $request)
     {   
         $commandes = auth()->user()->commandes()->with('articles')->orderByDesc('created_at')->get();
-
-
         if ($request->ajax()) {
            return response()->json($commandes);
         }

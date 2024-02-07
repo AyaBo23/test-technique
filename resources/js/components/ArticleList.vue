@@ -2,10 +2,10 @@
   <div class="container">
     <div class="row">
       <div v-for="article in getArticles" :key="article.id" class="col-sm-6 col-md-4">
-        <div class="article border p-4 my-2">
+        <div class="article border p-4 my-2 shadow-sm">
           <div class="article-image">( Image de l'article)</div>
           <h2>{{ article.label}}</h2>
-          <p class="fw-bold">{{ article.price}} €</p>
+          <h4 class="fw-bold">{{ article.price}} €</h4>
           <label for="quantity">Quantité:</label>
           <select  v-model="article.quantity" name="quantity" class="form-control my-2" required>
             <option v-for="i in article.stock_quantity" :key="i" :value="i">{{ i }}</option>
@@ -15,7 +15,7 @@
             Article ajouté avec succès!
           </div>
           <div class="buttons">
-            <button class="btn btn-primary" @click="handleAddToCart(article, $store.state.cart)">Ajouter au panier</button>
+            <button class="btn btn-dark" @click="handleAddToCart(article, $store.state.cart)">Ajouter au panier</button>
           </div>
         </div>
       </div> 
@@ -69,6 +69,7 @@ import { mapActions, mapGetters } from "vuex";
 
 <style lang="scss" scoped>
 .article {
+  border-radius: 10px;
   &-image {
     min-height: 150px;
     width: 100%;
