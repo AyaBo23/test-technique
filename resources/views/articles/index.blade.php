@@ -2,7 +2,8 @@
 
 @section('content')
   <div class="container">
-    <div class="row">
+    <article-list></article-list>
+    <!--div class="row">
       @foreach ($articles as $article)
       <div class="col-sm-6 col-md-4">
           <form action="{{ route('cart.update', auth()->user()->cart )}}" method="POST">
@@ -28,6 +29,6 @@
         </div>
       </form>
       @endforeach
-    </div>
+    </div-->
 </div>
 @endsection

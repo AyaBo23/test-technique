@@ -6,7 +6,8 @@ const store = new createStore({
     commandes : [],
     articles : [],
     cart: {},
-    cartItems: {}
+    cartItems: {},
+    total: '',
   }, 
   getters: {
     getCommandes(state) {
@@ -50,12 +51,28 @@ const store = new createStore({
         console.log( err.message)
       })
     },
-    /*
+
+    
+    fetchTotalPrice({commit, getters}) {
+      /*axios.get(`/totalPrice/${state.cart}`)
+      .then( res => {
+        console.log(res.data)
+      //  commit('setCartTotal', res.data)
+      }).catch( err => {
+        console.log( err.message)
+      })*/
+    },
+
     addToCart({ commit, getters }, article) {
       const cartId = getters.getCart.id;
       
       const csrfToken = document.querySelector('meta[name="csrf-token"]').content;
-      axios.put(`/cart/${cartId}`, article, {
+      const payload = {
+          id: article.id,
+          quantity: article.quantity,
+      }
+
+      axios.put(`/cart/${cartId}`, payload, {
         headers: {
           'X-CSRF-TOKEN': csrfToken,
         },
@@ -66,8 +83,8 @@ const store = new createStore({
       .catch(err => {
         console.log(err.message);
       });
-    },*/
-    
+    },
+
     //Supprimer un article du panier d'achat
     removeItem({commit, getters}, article) {
       console.log('removing...')
@@ -136,6 +153,9 @@ const store = new createStore({
     },
     setCartItems(state, payload) {
       state.cartItems = payload
+    },
+    setCartTotal(state, payload) {
+      state.total = payload
     }
   }
 })

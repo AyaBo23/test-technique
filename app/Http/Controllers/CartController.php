@@ -33,19 +33,20 @@ class CartController extends Controller
      */
     public function update(Request $request, Cart $cart)
     {
+
         $data = $request->validate([
-            'article' => 'required',
-            'quantity' => 'required|min:1'
+            'id' => 'required|exists:articles',
+            'quantity' => 'required|min:1',
         ]);
 
-        $article = Article::find($data['article']);
+        $article = Article::find($data['id']);
 
         //On vérifie si l'article existe déjà dans le panier
         $existsInCart = $cart->articles()->where('article_id', $article->id)->exists();
 
         // Si l'article n'existe pas dans le panier on l'ajoute: 
         if (!($existsInCart)) {
-            $cart->articles()->attach($article, ['quantity' => $data['quantity']]);
+            $cart->articles()->attach($article, ['quantity' => $data['quantity']]);   
         }
 
         //Si l'article existe on met à jour sa quantité
@@ -57,9 +58,8 @@ class CartController extends Controller
 
             $cart->articles()->updateExistingPivot($article->id, ['quantity' => $newQuantity]);
 
-           // $cart->articles()->syncWithoutDetaching([$article->id => ['quantity' => $data['quantity']]]);
         }
-        return redirect(route('cart.show', $cart));
+        return 'Article Added Successfully!';
 
     }
 

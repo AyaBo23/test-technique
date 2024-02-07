@@ -34,5 +34,6 @@ Route::group(['middleware' => ['auth']], function() {
     Route::resource('cart', CartController::class)->except(['index', 'store']);
     Route::get('/currentCart', [CartController::class, 'getCurrentCart']);
     Route::get('/cartItems', [CartController::class, 'getCartItems']);
+    Route::get('/totalPrice/{cart}', [CartController::class, 'calculateTotalPrice']);
     Route::delete('/cart/{cart}/article/{article}', [CartController::class, 'removeCartArticle'])->name('cart.article.delete');
 });
