@@ -12,7 +12,8 @@ class CommandeController extends Controller
      */
     public function index(Request $request)
     {   
-        $commandes = auth()->user()->commandes()->get();
+        $commandes = auth()->user()->commandes()->with('articles')->orderByDesc('created_at')->get();
+
 
         if ($request->ajax()) {
            return response()->json($commandes);
@@ -33,7 +34,7 @@ class CommandeController extends Controller
 
         //Prix total de la commande: 
         $price = $request->validate([
-            'price' => 'required'
+            'price' => 'required|numeric|min:0.01'
         ]);
 
         $userId = auth()->user()->id;
@@ -46,12 +47,19 @@ class CommandeController extends Controller
         ]);
 
         // On crée la relation entre la commande et les articles commandés avec les quantités commandées: 
-
+        $articlesWithQuantities = [];
+        foreach ($orderedArticles as $article) {
+            $quantity = $article->pivot->quantity;
+            $articlesWithQuantities[$article->id] = ['quantity' => $quantity];
+        }
        // $commande->articles()->attach($orderedArticlesIds, ['quantity' => $orderedArticles->pivot->quantity->get()]);
 
+       $commande->articles()->sync($articlesWithQuantities);
+
        //On vide le panier d'achat
+        auth()->user()->cart->articles()->detach();
+
        return redirect(route('commandes.index'));
-             
     }
     /**
      * Display the specified resource.

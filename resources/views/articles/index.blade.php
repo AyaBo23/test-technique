@@ -8,7 +8,6 @@
           <form action="{{ route('cart.update', auth()->user()->cart )}}" method="POST">
             @csrf
             @method('PUT')
-
             <input type="hidden" name="article" value={{ $article->id }}>
             
             <div class="article border p-4 my-2">
@@ -17,7 +16,7 @@
               <p class="fw-bold">{{ $article->price}} €</p>
 
               <select name="quantity" class="form-control my-2">
-                @for ($i = 1; $i < $article->stock_quantity; $i++)
+                @for ($i = 1; $i <= $article->stock_quantity; $i++)
                   <option value="{{ $i}}"> {{ $i }}</option>
                 @endfor
               </select>

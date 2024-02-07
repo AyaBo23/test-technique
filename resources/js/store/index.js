@@ -51,7 +51,6 @@ const store = new createStore({
       })
     },
     /*
-    
     addToCart({ commit, getters }, article) {
       const cartId = getters.getCart.id;
       
@@ -68,7 +67,7 @@ const store = new createStore({
         console.log(err.message);
       });
     },*/
-
+    
     //Supprimer un article du panier d'achat
     removeItem({commit, getters}, article) {
       console.log('removing...')

@@ -50,9 +50,15 @@ class CartController extends Controller
 
         //Si l'article existe on met à jour sa quantité
         else {
-            $cart->articles()->syncWithoutDetaching([$article->id => ['quantity' => $data['quantity']]]);
+            $currentQuantity = $cart->articles()->where('article_id', $article->id)->first()->pivot->quantity;
+
+            //On ne doit pas dépasser la quantité d'articles dans le stock
+            $newQuantity = min($article->stock_quantity, $currentQuantity + $data['quantity']);
+
+            $cart->articles()->updateExistingPivot($article->id, ['quantity' => $newQuantity]);
+
+           // $cart->articles()->syncWithoutDetaching([$article->id => ['quantity' => $data['quantity']]]);
         }
-        
         return redirect(route('cart.show', $cart));
 
     }

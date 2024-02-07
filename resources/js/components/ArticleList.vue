@@ -7,7 +7,6 @@
           <h2>{{ article.label}}</h2>
           <p class="fw-bold">{{ article.price}} €</p>
           <p>Quantité en stock: {{  article.stock_quantity  }}</p>
-          
           <div class="buttons">
             <button class="btn btn-primary" @click="addToCart(article, $store.state.cart)">Ajouter au panier</button>
           </div>
